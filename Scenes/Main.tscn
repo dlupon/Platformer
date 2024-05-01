@@ -1,6 +1,43 @@
-[gd_scene load_steps=2 format=2]
+[gd_scene load_steps=5 format=2]
 
 [ext_resource path="res://Scripts/Main.cs" type="Script" id=1]
+[ext_resource path="res://Scenes/GameObjects/Player.tscn" type="PackedScene" id=2]
+[ext_resource path="res://Scripts/Managers/InputManager.cs" type="Script" id=3]
+[ext_resource path="res://Scenes/GameObjects/Ground.tscn" type="PackedScene" id=4]
 
 [node name="Main" type="Node"]
 script = ExtResource( 1 )
+
+[node name="Managers" type="Node" parent="."]
+
+[node name="InputManager" type="Node" parent="Managers"]
+script = ExtResource( 3 )
+
+[node name="Game" type="Node" parent="."]
+
+[node name="DirectionalLight" type="DirectionalLight" parent="Game"]
+transform = Transform( 0.636784, -0.707847, 0.305711, -0.379193, 0.0577312, 0.923515, -0.671356, -0.704003, -0.231648, 0, 17.8031, 0 )
+shadow_enabled = true
+directional_shadow_mode = 0
+directional_shadow_blend_splits = true
+directional_shadow_depth_range = 1
+
+[node name="Player" parent="Game" instance=ExtResource( 2 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.143061, 27.9339, -10.6878 )
+accelerationSpeed = 500.0
+jumpStregth = 7.5
+gravityStregth = 0.5
+
+[node name="Camera" type="Camera" parent="Game/Player"]
+transform = Transform( 1, 0, 0, 0, 0.965926, 0.258819, 0, -0.258819, 0.965926, 0, 3.90032, 10.3601 )
+
+[node name="Ground" parent="Game" instance=ExtResource( 4 )]
+
+[node name="Ground2" parent="Game" instance=ExtResource( 4 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.923699, 38.7889 )
+
+[node name="Ground3" parent="Game" instance=ExtResource( 4 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 40.1457, 3.8474, 18.5303 )
+
+[node name="Ground4" parent="Game" instance=ExtResource( 4 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 2.97991, 7.6948, -35.3638 )

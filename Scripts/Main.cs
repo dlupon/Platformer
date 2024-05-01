@@ -1,12 +1,12 @@
 using Godot;
-using System;
+using Com.Unbocal.Platformer.Utilities;
 
 // Author	: Dylan Lupon
 // Date		: 05/01/2024
-namespace Com.IsartDigital.Platformer
+namespace Com.Unbocal.Platformer
 {
 	
-	public class Main : Node
+	public partial class Main : Node
 	{
 		// ----------------~~~~~~~~~~~~~~~~~~~==========================# // Variables
 
@@ -16,7 +16,7 @@ namespace Com.IsartDigital.Platformer
 
 		public override void _Ready()
 		{
-			GD.Print("Hello World");
+			
 		}
 	}
 }
