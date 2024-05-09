@@ -18,6 +18,7 @@ namespace Com.Unbocal.Platformer
             private const string INPUT_NAME_GO_BACKWARD = "go_backward";
             private const string INPUT_NAME_GO_LEFT = "go_left";
             private const string INPUT_NAME_GO_RIGHT = "go_right";
+            private const string INPUT_NAME_DASH = "dash";
             private const string INPUT_NAME_TURN_LEFT = "turn_left";
             private const string INPUT_NAME_TURN_RIGHT = "turn_right";
             private const string INPUT_NAME_TURN_UP = "turn_up";
@@ -25,10 +26,7 @@ namespace Com.Unbocal.Platformer
             private const string INPUT_NAME_JUMP = "jump";
 
             // IS INPUT PRESSED
-            public static bool goForward => Input.IsActionPressed(INPUT_NAME_GO_FORWARD);
-            public static bool goBackward => Input.IsActionPressed(INPUT_NAME_GO_BACKWARD);
-            public static bool goLeft => Input.IsActionPressed(INPUT_NAME_GO_LEFT);
-            public static bool goRight => Input.IsActionPressed(INPUT_NAME_GO_RIGHT);
+            public static bool dash => Input.IsActionJustPressed(INPUT_NAME_DASH);
             public static bool jump => Input.IsActionJustPressed(INPUT_NAME_JUMP);
 
             // INPUT STRENGTH

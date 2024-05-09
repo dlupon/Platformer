@@ -12,7 +12,6 @@ height = 2.00295
 [node name="Player" type="CharacterBody3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.1981, 0)
 script = ExtResource("1")
-jumpStregth = 100.0
 rendererPath = NodePath("Mesh")
 
 [node name="Mesh" type="MeshInstance3D" parent="."]

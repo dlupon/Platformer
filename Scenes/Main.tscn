@@ -57,3 +57,6 @@ transform = Transform3D(2.5, 0, 0, 0, 2.5, 0, 0, 0, 2.53, -2.95963, 8.76538, -16
 
 [node name="Cube5" parent="Game" instance=ExtResource("5")]
 transform = Transform3D(6.07856, -1.18013, 0.869573, 0.966548, 6.00703, 1.46416, -1.08601, -1.25912, 6.17022, -8.78, 6.95, -40.701)
+
+[node name="Camera3D" type="Camera3D" parent="Game"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0340271, 14.503, 6.0826)

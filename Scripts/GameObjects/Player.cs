@@ -22,14 +22,16 @@ namespace Com.Unbocal.Platformer.GameObjects
 		[Export] private float accelerationRunMax = 100f;
 		[Export] private float accelerationDurationIn = .1f;
 		[Export] private float accelerationDurationOut = .25f;
-		[Export] private float jumpStregth = 75f;
-		[Export] private float gravityStregth = 2.5f;
+		[Export] private float jumpStregth = 100f;
+		[Export] private float gravityStregth = 3f;
 		private const float VELOCITY_SMOOTHNESS = 10f;
         private float accelerationSpeed;
 		private float decelerationSpeed;
 		private Vector3 acceleration = Vector3.Zero;
 		private Vector3 floorNormal = Vector3.Up;
 		private Vector3 inputDirection;
+		// Dash
+		private const float DASH_STRENGTH = 100f;
 		// Rotation
 		private const float ROTATION_SMOOTHNESS = 5f;
 		private Vector3 rotationVelocity = Vector3.Zero;
@@ -136,7 +138,7 @@ namespace Com.Unbocal.Platformer.GameObjects
             VelocityApply();
 			RotationVelocityApply();
             MoveAndSlide();
-            FallingCheck(SetMouvementsFalling);
+            ActionOnFallingCheck(SetMouvementsFalling);
 		}
 
 		// MOVEMENTS FALLING
@@ -146,14 +148,17 @@ namespace Com.Unbocal.Platformer.GameObjects
 			GravityApply();
             VelocityApply();
 			RotationVelocityApply();
+			MustDash();
             MoveAndSlide();
-			GroundCheck(SetMouvementsGround);
+			ActionOnGroundCheck(SetMouvementsGround);
         }
 
 		// MOVEMENTS COMMON ACTIONS
+		private void GravityApply() => Velocity -= floorNormal * gravityStregth *deltaTime;
+		
 		private void VelocityApply()
 		{
-			acceleration = (inputDirection * accelerationRunMax).Rotated(floorNormal, camera.GlobalRotation.Y);			
+			acceleration = (inputDirection * accelerationRunMax).Rotated(floorNormal, camera.GlobalRotation.Y);
 			Velocity = Velocity.Lerp(acceleration,deltaTime * VELOCITY_SMOOTHNESS);
 		}
 
@@ -170,12 +175,16 @@ namespace Com.Unbocal.Platformer.GameObjects
             rotationAngleVector.Y = rotationVelocity.X;
             renderer.GlobalRotation = Vector3.Up * rotationAngleVector.Angle();
         }
-	
-		private void GravityApply() => Velocity -= floorNormal * gravityStregth *deltaTime;
 
-		private void GroundCheck(Action pSwitchAction) { if (IsOnFloor()) pSwitchAction(); }
+        private void MustDash()
+		{
+			if (!InputManager.Player.dash) return;
+			Velocity = (inputDirection.Rotated(floorNormal, camera.GlobalRotation.Y) + floorNormal) * DASH_STRENGTH;
+        }
+
+        private void ActionOnGroundCheck(Action pSwitchAction) { if (IsOnFloor()) pSwitchAction(); }
 		
-		private void FallingCheck(Action pSwitchAction) { if (!IsOnFloor()) pSwitchAction(); }
+		private void ActionOnFallingCheck(Action pSwitchAction) { if (!IsOnFloor()) pSwitchAction(); }
 
         // ----------------~~~~~~~~~~~~~~~~~~~==========================# // Jump
 
