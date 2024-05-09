@@ -10,23 +10,30 @@ namespace Com.Unbocal.Platformer.GameObjects
 	{
 		// ----------------~~~~~~~~~~~~~~~~~~~==========================# // Variables
 
+		// UTILITIES
+		private float deltaTime;
+
 		// STATE MACHIN
-		private Action<double> MovementsAction;
-		private Action<double> CameraAction;
+		private Action MovementsAction;
+		private Action CameraAction;
 
 		// MOVEMENTS
+        // Displacement
 		[Export] private float accelerationRunMax = 100f;
 		[Export] private float accelerationDurationIn = .1f;
 		[Export] private float accelerationDurationOut = .25f;
 		[Export] private float jumpStregth = 75f;
 		[Export] private float gravityStregth = 2.5f;
-
-		private float accelerationSpeed;
+		private const float VELOCITY_SMOOTHNESS = 10f;
+        private float accelerationSpeed;
 		private float decelerationSpeed;
 		private Vector3 acceleration = Vector3.Zero;
-		private Vector3 rotationVelocity = Vector3.Zero;
 		private Vector3 floorNormal = Vector3.Up;
 		private Vector3 inputDirection;
+		// Rotation
+		private const float ROTATION_SMOOTHNESS = 5f;
+		private Vector3 rotationVelocity = Vector3.Zero;
+		private Vector2 rotationAngleVector = Vector2.Zero;
 
 		// JUMP
 		[Export] private int jumpAmount = 2;
@@ -43,13 +50,14 @@ namespace Com.Unbocal.Platformer.GameObjects
 		[Export] private NodePath rendererPath;
 		private Node3D renderer;
 
-
         // ----------------~~~~~~~~~~~~~~~~~~~==========================# // Initialization
 
         public override void _Ready()
         {
 			// Init
 			SetNodes();
+
+			// Set Properties
             SetMouvementsFalling();
 			SetCameraRotation();
         }
@@ -65,9 +73,13 @@ namespace Com.Unbocal.Platformer.GameObjects
 
         public override void _PhysicsProcess(double pDelta)
         {
+			// Update
 			InputDirectionUpDate();
-			CameraAction(pDelta);
-            MovementsAction(pDelta);
+			deltaTime = (float)pDelta;
+
+			// Movements
+			CameraAction();
+            MovementsAction();
         }
 
 		// ----------------~~~~~~~~~~~~~~~~~~~==========================# // Inputs
@@ -105,59 +117,61 @@ namespace Com.Unbocal.Platformer.GameObjects
 
         // ----------------~~~~~~~~~~~~~~~~~~~==========================# // Camera Actions
         
-		private void CameraStatic(double pDelta) { }
+		private void CameraStatic() { }
 
-        private void CameraRotation(double pDelta)
+        private void CameraRotation()
         {
 			camera.LookAt(GlobalPosition);
-            cameraArm.Rotation += (InputManager.Player.turnLeftStrength - InputManager.Player.turnRightStrength) * Vector3.Up * cameraRotationSpeed * ((float)pDelta);
-            cameraArm.Rotation += (InputManager.Player.turnUpStrength - InputManager.Player.turnDownStrength) * Vector3.Right * cameraRotationSpeed * ((float)pDelta);
+            cameraArm.Rotation += (InputManager.Player.turnLeftStrength - InputManager.Player.turnRightStrength) * Vector3.Up * cameraRotationSpeed * deltaTime;
+            cameraArm.Rotation += (InputManager.Player.turnUpStrength - InputManager.Player.turnDownStrength) * Vector3.Right * cameraRotationSpeed * deltaTime;
         }
 
         // ----------------~~~~~~~~~~~~~~~~~~~==========================# // Movement Actions
 
 
 		// MOVEMENTS ON GROUND
-        private void MovementsOnGround(double pDelta)
+        private void MovementsOnGround()
 		{
             MustJump();
-            VelocityApply(pDelta);
-			MoveAndSlide();
+            VelocityApply();
+			RotationVelocityApply();
+            MoveAndSlide();
             FallingCheck(SetMouvementsFalling);
 		}
 
 		// MOVEMENTS FALLING
-		private void MovementFalling(double pDelta)
+		private void MovementFalling()
 		{
             MustJump();
-			GravityApply(pDelta);
-            VelocityApply(pDelta);
+			GravityApply();
+            VelocityApply();
+			RotationVelocityApply();
             MoveAndSlide();
 			GroundCheck(SetMouvementsGround);
         }
 
 		// MOVEMENTS COMMON ACTIONS
-		private void VelocityApply(double pDelta)
+		private void VelocityApply()
 		{
 			acceleration = (inputDirection * accelerationRunMax).Rotated(floorNormal, camera.GlobalRotation.Y);			
-			Velocity = Velocity.Lerp(acceleration, ((float)pDelta) * 10f);
-
-			if (acceleration.Length() <= 0f) return;
-
-			Vector2 test = Vector2.Zero;
-			rotationVelocity = rotationVelocity.Lerp(Velocity, ((float)pDelta) * 5);
-			
-			test.X = rotationVelocity.Z;
-			test.Y = rotationVelocity.X;
-
-
-			Vector3 oui = Vector3.Up * test.Angle();
-
-
-			renderer.GlobalRotation = oui;
+			Velocity = Velocity.Lerp(acceleration,deltaTime * VELOCITY_SMOOTHNESS);
 		}
+
+		private void RotationVelocityApply()
+		{
+			// Rotate Only If It's Needed
+            if (acceleration.Length() <= 0f) return;
+
+			// Get A Smooth Rotation
+            rotationVelocity = rotationVelocity.Lerp(Velocity,deltaTime * ROTATION_SMOOTHNESS);
+
+			// Update The Angle
+            rotationAngleVector.X = rotationVelocity.Z;
+            rotationAngleVector.Y = rotationVelocity.X;
+            renderer.GlobalRotation = Vector3.Up * rotationAngleVector.Angle();
+        }
 	
-		private void GravityApply(double pDelta) => Velocity -= floorNormal * gravityStregth * ((float)pDelta);
+		private void GravityApply() => Velocity -= floorNormal * gravityStregth *deltaTime;
 
 		private void GroundCheck(Action pSwitchAction) { if (IsOnFloor()) pSwitchAction(); }
 		
