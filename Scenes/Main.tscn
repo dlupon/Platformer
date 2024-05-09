@@ -1,0 +1,59 @@
+[gd_scene load_steps=5 format=3 uid="uid://r4hpibsu13a2"]
+
+[ext_resource type="PackedScene" uid="uid://cuhqrn8iged7t" path="res://Scenes/GameObjects/Player.tscn" id="2"]
+[ext_resource type="PackedScene" path="res://Scenes/GameObjects/Ground.tscn" id="4"]
+[ext_resource type="PackedScene" uid="uid://cs0yits0mw33b" path="res://Scenes/GameObjects/Cube.tscn" id="5"]
+[ext_resource type="Environment" uid="uid://ywmpljc23r1t" path="res://Assets/World/World.tres" id="6"]
+
+[node name="Main" type="Node"]
+
+[node name="Game" type="Node" parent="."]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="Game"]
+environment = ExtResource("6")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="Game"]
+transform = Transform3D(0.636784, -0.707847, 0.305711, -0.379193, 0.0577311, 0.923515, -0.671356, -0.704003, -0.231648, -5.57831, 13.027, -12.3701)
+shadow_enabled = true
+
+[node name="Player" parent="Game" instance=ExtResource("2")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.143061, 37.4495, -10.6878)
+floor_snap_length = 0.56
+accelerationRunMax = 15.0
+gravityStregth = 250.0
+cameraArmPath = NodePath("SpringArm3D")
+cameraPath = NodePath("SpringArm3D/Camera3D")
+
+[node name="SpringArm3D" type="SpringArm3D" parent="Game/Player"]
+spring_length = 10.0
+
+[node name="Camera3D" type="Camera3D" parent="Game/Player/SpringArm3D"]
+transform = Transform3D(1, 0, 0, 0, 0.813578, 0.581456, 0, -0.581456, 0.813578, 0, 4.7371, 5.9296)
+environment = ExtResource("6")
+current = true
+
+[node name="Ground" parent="Game" instance=ExtResource("4")]
+
+[node name="Ground2" parent="Game" instance=ExtResource("4")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.923699, 38.7889)
+
+[node name="Ground3" parent="Game" instance=ExtResource("4")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 40.1457, 3.8474, 18.5303)
+
+[node name="Ground4" parent="Game" instance=ExtResource("4")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.97991, 7.6948, -35.3638)
+
+[node name="Cube" parent="Game" instance=ExtResource("5")]
+transform = Transform3D(5, 0, 0, 0, 5, 0, 0, 0, 5, 1.03533, 10.3572, -20.7499)
+
+[node name="Cube2" parent="Game" instance=ExtResource("5")]
+transform = Transform3D(2.5, 0, 0, 0, 2.5, 0, 0, 0, 2.53, 6.093, 8.075, -15.688)
+
+[node name="Cube3" parent="Game" instance=ExtResource("5")]
+transform = Transform3D(2.5, 0, 0, 0, 2.5, 0, 0, 0, 2.53, 1.03225, 9.42036, -14.6276)
+
+[node name="Cube4" parent="Game" instance=ExtResource("5")]
+transform = Transform3D(2.5, 0, 0, 0, 2.5, 0, 0, 0, 2.53, -2.95963, 8.76538, -16.0681)
+
+[node name="Cube5" parent="Game" instance=ExtResource("5")]
+transform = Transform3D(6.07856, -1.18013, 0.869573, 0.966548, 6.00703, 1.46416, -1.08601, -1.25912, 6.17022, -8.78, 6.95, -40.701)

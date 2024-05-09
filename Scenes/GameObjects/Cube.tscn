@@ -1,0 +1,13 @@
+[gd_scene load_steps=3 format=3 uid="uid://cs0yits0mw33b"]
+
+[ext_resource type="PackedScene" uid="uid://megwsxv1xol2" path="res://Assets/Floor/Cube.glb" id="1_n4jx8"]
+
+[sub_resource type="BoxShape3D" id="2"]
+size = Vector3(2, 2, 2)
+
+[node name="Cube" type="StaticBody3D"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("2")
+
+[node name="Cube" parent="." instance=ExtResource("1_n4jx8")]
